@@ -23,5 +23,9 @@ Prequisites:
 - Python/Pip
 
 1. **Prepare Code & Environment**
+   - Navigate into mutuals code directory `cd mutuals-code`
+   - Create a python virtual env (To keep packages clean and organised in an environment) `python -m venv venv` and `source venv/bin/activate`  (On Windows: `venv\Scripts\activate`)
+   - Run the command `pip install -r requirements.txt` to install all dependencies
+   - 
    
   
