@@ -65,6 +65,8 @@ Prequisites:
    - Run the command `npm run dev` to start up the react platform and access on the browser via `http://localhost:3000`. Make sure no other application is using port 3000.
    - You should see the Mutuals home screen as shown in the image below.
 
+   <img width="1113" alt="Screenshot 2025-05-06 at 15 31 56" src="https://github.com/user-attachments/assets/8b4b6196-dd70-4e73-8f09-c8077d554819" />   
+
 2. **Testing out the platform**
    - You can check for a users `user_id` in the database or the python-django api at `` and copy a user id.
    - Click the 'Enter Dashboard' button Paste or type such id into the 'Enter your User ID' field and proceed.
