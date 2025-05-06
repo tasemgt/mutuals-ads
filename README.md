@@ -71,6 +71,7 @@ Prequisites:
    - You can check for a users `user_id` in the database or the python-django api at `` and copy a user id.
    - Click the 'Enter Dashboard' button Paste or type such id into the 'Enter your User ID' field and proceed.
    - This will navigate you to the dashboard of that user showing his interests, group, subgroup, and fellow mutuals.
+   - You can check the file `mutuals-frontend/app/dashboard/page.tsx` line 95, `mockUserData = data; //Comment out this line to see demo data and structure`. When commented out, the dashboard would show some dummy data that can showcase what the page would look like if we have proper grouping and subgrouping done.
    - To create a new user, go to 'Getting started' and fill in the fields, then hit Register. This should create a new user and subsequently our ML system should assign him a group and subgroup that would be displayed on their dashboard.
    - You can confirm new users created from your db.
 
