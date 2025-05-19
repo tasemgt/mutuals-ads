@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
+from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, SlugRelatedField
 from .models import User, Interest, Group, SubGroup
 
 class InterestSerializer(ModelSerializer):
@@ -9,23 +9,33 @@ class InterestSerializer(ModelSerializer):
 class GroupSerializer(ModelSerializer):
     class Meta:
         model = Group
-        fields = ['id', 'name', 'created_at']
+        fields = ['id', 'group_id', 'name', 'created_at']
 
 
 class SubGroupSerializer(ModelSerializer):
     group = GroupSerializer(read_only=True)
     class Meta:
         model = SubGroup
-        fields = ['id', 'name', 'event', 'group', 'created_at']
+        fields = ['id', 'subgroup_id', 'name', 'event', 'group', 'created_at']
 
-# User Serializer
+
 class UserSerializer(ModelSerializer):
-    interests = InterestSerializer(many=True, read_only=True)  # Show interest names
+    interests = InterestSerializer(many=True, read_only=True)
     interest_ids = PrimaryKeyRelatedField(
         queryset=Interest.objects.all(), many=True, write_only=True, source='interests'
     )
 
-    group = GroupSerializer(read_only=True)
+    # Group handling
+    group = GroupSerializer(read_only=True)  # Show group data
+    group_id = SlugRelatedField(  # Accept group_id for assignment
+        slug_field='group_id',
+        queryset=Group.objects.all(),
+        source='group',
+        write_only=True,
+        required=False
+    )
+
+    # Subgroup handling (read-only)
     subgroup = SubGroupSerializer(read_only=True)
 
     class Meta:
@@ -41,26 +51,20 @@ class UserSerializer(ModelSerializer):
             'budget',
             'age',
             'age_range',
-            'group',
+            'group',        # full group data
+            'group_id',     # for input only
             'subgroup',
             'interests',
-            'interest_ids',  # used for input only
+            'interest_ids',
         ]
-        # 'interest_ids' is write-only, and 'interests' is read-only to show full names
 
     def create(self, validated_data):
-        """
-        Overriding to support M2M creation with interests.
-        """
         interests = validated_data.pop('interests', [])
         user = User.objects.create(**validated_data)
         user.interests.set(interests)
         return user
 
     def update(self, instance, validated_data):
-        """
-        Overriding to support M2M updates for interests.
-        """
         interests = validated_data.pop('interests', None)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)

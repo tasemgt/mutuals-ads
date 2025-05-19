@@ -8,11 +8,13 @@ class Interest(models.Model):
     
 class Group(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    group_id = models.IntegerField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
 
 class SubGroup(models.Model):
+    subgroup_id = models.IntegerField(unique=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='subgroups')
     name = models.CharField(max_length=100)
     event = models.CharField(max_length=100)

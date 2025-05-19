@@ -9,6 +9,7 @@ from django.db import transaction
 from .models import User, Interest, Group, SubGroup
 from .serializers import InterestSerializer, UserSerializer, GroupSerializer, SubGroupSerializer
 import numpy as np
+from .ml_models.models import assign_new_user_to_cluster 
 
 
 # Load your trained clustering model (e.g., KMeans)
@@ -136,81 +137,66 @@ def users_handler(request):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
-    # Create user
     elif request.method == 'POST':
-        
+        # Calculate age and age range
         age, age_range = calculate_age_and_range(request.data['dob'])
         request.data['age'] = age
         request.data['age_range'] = age_range
+
+        # Generate unique user ID
         request.data['user_id'] = generate_unique_user_id()
 
-        print(request.data)
+        # Assign user to a group (cluster) using their interests
+        interests = request.data.get('interests', [])  # This should be a list of strings
+        user_id = request.data['user_id']
 
+        # Lookup interest names in the database
+        interests_qs = Interest.objects.filter(id__in=interests)
+        interest_names = list(interests_qs.values_list('name', flat=True)) 
+
+        print(user_id)
+
+        cluster_assignment = assign_new_user_to_cluster(user_id, interest_names)
+
+        print("Cluster>>", cluster_assignment)
+
+        # Add the cluster as group_id to the user data
+        if cluster_assignment['cluster'] is not None:
+            request.data['group_id'] = cluster_assignment['cluster']
+        else:
+            request.data['group_id'] = None  # Or set a default group if needed
+
+        # Proceed with serializer
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-# Register a fresh user and infer using our model
-# @api_view(['POST'])
-# @transaction.atomic
-# def register_user_and_assign_group(request):
-#     """
-#     Custom endpoint to register a new user, run ML clustering,
-#     and assign them to a group and subgroup.
-#     """
-#     data = request.data
+# def users_handler(request):
+#     if request.method == 'GET':
+#         users = User.objects.all()
+#         serializer = UserSerializer(users, many=True)
+#         return Response(serializer.data)
 
-#     # Validate and temporarily save the user (we'll finalize if clustering succeeds)
-#     serializer = UserSerializer(data=data)
-#     if not serializer.is_valid():
+#     # Create user
+#     elif request.method == 'POST':
+        
+#         age, age_range = calculate_age_and_range(request.data['dob'])
+#         request.data['age'] = age
+#         request.data['age_range'] = age_range
+#         request.data['user_id'] = generate_unique_user_id()
+
+#         print(request.data)
+
+#         serializer = UserSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#     # --- Step 1: Prepare features for the ML model ---
-#     interests = data.get('interests', [])
-#     budget = float(data.get('budget', 0))
-#     age = int(data.get('age', 0))
-    
-#     # One-hot encode interests (multi-hot)
-#     interest_vector = mlb.transform([interests])  # shape: (1, n_interests)
-    
-#     # Combine features: [budget, age] + interests
-#     feature_vector = np.concatenate([[budget, age], interest_vector[0]])  # shape: (1, total_features)
-#     feature_vector = feature_vector.reshape(1, -1)
-
-#     # --- Step 2: Predict the cluster (group ID) ---
-#     group_id = ml_model.predict(feature_vector)[0]
-
-#     # --- Step 3: Create or fetch the Group based on cluster ---
-#     group, created = Group.objects.get_or_create(name=f"Group-{group_id}")
-
-#     # --- Step 4: Find or create a suitable SubGroup ---
-#     # For now, we keep a simple rule: 5 users per subgroup max
-#     subgroup_qs = SubGroup.objects.filter(group=group)
-#     assigned_subgroup = None
-#     for subgroup in subgroup_qs:
-#         if subgroup.users.count() < 5:
-#             assigned_subgroup = subgroup
-#             break
-
-#     # If all subgroups are full or none exist, create a new one
-#     if not assigned_subgroup:
-#         assigned_subgroup = SubGroup.objects.create(name=f"{group.name}-Subgroup-{subgroup_qs.count() + 1}", group=group)
-
-#     # --- Step 5: Create and save the user with group/subgroup ---
-#     user = serializer.save(group=group, subgroup=assigned_subgroup)
-
-#     # Assign the user to the subgroup (M2M)
-#     assigned_subgroup.users.add(user)
-
-#     return Response({
-#         "message": "User registered and assigned to group/subgroup.",
-#         "user": UserSerializer(user).data,
-#         "group": group.name,
-#         "subgroup": assigned_subgroup.name
-#     }, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
