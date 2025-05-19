@@ -23,9 +23,79 @@ Prequisites:
 - Python/Pip
 
 1. **Prepare Code & Environment**
-   - Navigate into mutuals code directory `cd mutuals-code`
+   - Navigate into mutuals code directory `cd mutuals-ads`
    - Create a python virtual env (To keep packages clean and organised in an environment) `python -m venv venv` and `source venv/bin/activate`  (On Windows: `venv\Scripts\activate`)
    - Run the command `pip install -r requirements.txt` to install all dependencies
-   - 
+   - Navigate into mutuals backend `cd mutuals_backend`
+   - Run the commands to setup db sqlite and migrate schema definitions
+     ```
+        python manage.py makemigrations
+        python manage.py migrate
+     
+     ```
+   - Start the python backend server `python manage.py runserver`
+   - Open the url `http://127.0.0.1:8000/api/` on your browser and ensure you can see the following:
+     ```
+      HTTP 200 OK
+      Allow: OPTIONS, GET
+      Content-Type: application/json
+      Vary: Accept
+      
+      {
+          "Success": "Setup was successful"
+      }
+     
+     ```
+2. **Seed the Database with our dummy 500 users**
+   - Open a new terminal in the same `mutuals_backend` directory and ensure you're in your virtual environment by running `source venv/bin/activate` to activate it then run the command `python seed_data.py --interests` to seed the database with interests and `python seed_data.py --users` to add the 500 users from our csv file. You can verify this by opening the `db.sqlite3` file on DB Browser, and check `mutuals_app_user` and so on...
+   - You can also verify by visiting `http://127.0.0.1:8000/api/users` on the browser and seeing all users and their interests. As we can see, groups and subgroups are null at this point.
+
+
+
+FrontEnd Setup
+================
+
+Prequisites:
+- Nodejs v18 or v20 (Install for your OS via `https://nodejs.org/en/download`)
+- Test your installation by running `node -v` and see the version number
+
+1. **Installation and setup**
+   - Open a new terminal and navigate into the folder mutuals frontend `cd mutuals_frontend`
+   - Run the command `npm install` to install all front end dependencies
+   - Run the command `npm run dev` to start up the react platform and access on the browser via `http://localhost:3000`. Make sure no other application is using port 3000.
+   - You should see the Mutuals home screen as shown in the image below.
+   <br><br>
+   <img width="1113" alt="Screenshot 2025-05-06 at 15 31 56" src="https://github.com/user-attachments/assets/8b4b6196-dd70-4e73-8f09-c8077d554819" />   
+
+2. **Testing out the platform**
+   - You can check for a users `user_id` in the database or the python-django api at `` and copy a user id.
+   - Click the 'Enter Dashboard' button Paste or type such id into the 'Enter your User ID' field and proceed.
+   - This will navigate you to the dashboard of that user showing his interests, group, subgroup, and fellow mutuals.
+   - You can check the file `mutuals-frontend/app/dashboard/page.tsx` line 95, `mockUserData = data; //Comment out this line to see demo data and structure`. When commented out, the dashboard would show some dummy data that can showcase what the page would look like if we have proper grouping and subgrouping done like seen in the image below.
+
+  <br><br>
+  <img width="947" alt="Screenshot 2025-05-06 at 20 09 49" src="https://github.com/user-attachments/assets/a7921aa2-1a6e-48af-a0b8-ff45037935c4" />
+
+
+   - To create a new user, go to 'Getting started' and fill in the fields, then hit Register. This should create a new user and subsequently our ML system should assign him a group and subgroup that would be displayed on their dashboard.
+   - You can confirm new users created from your db.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
    
   
