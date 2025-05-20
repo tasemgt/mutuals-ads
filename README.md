@@ -77,7 +77,7 @@ Prequisites:
   <img width="947" alt="Screenshot 2025-05-06 at 20 09 49" src="https://github.com/user-attachments/assets/a7921aa2-1a6e-48af-a0b8-ff45037935c4" />
 
 
-   - To create a new user, go to 'Getting started' and fill in the fields, then hit Register. This should create a new user and subsequently our ML system should assign him a group and subgroup that would be displayed on their dashboard.
+   - To create a new user, go to 'Getting started' and fill in the fields, then hit Register. This should create a new user and our ML model then assigns this user a group and then a subgroup using age and budget that would be displayed on their dashboard.
    - You can confirm new users created from your db.
 
 
