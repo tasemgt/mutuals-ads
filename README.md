@@ -72,10 +72,11 @@ Prequisites:
    - Click the 'Enter Dashboard' button Paste or type such id into the 'Enter your User ID' field and proceed.
    - This will navigate you to the dashboard of that user showing his interests, group, subgroup, and fellow mutuals if any.
 
-  <br><br>
+  <br>
  
 <img width="938" alt="Screenshot 2025-05-20 at 23 59 00" src="https://github.com/user-attachments/assets/7581078b-326c-47e0-b155-1cb9641cd53f" />
 
+  <br>
 
    - To create a new user, go to 'Getting started' and fill in the fields, then hit Register. This should create a new user and our ML model then assigns this user a group and then a subgroup using age and budget that would be displayed on their dashboard.
    - You can confirm new users created from your db.
