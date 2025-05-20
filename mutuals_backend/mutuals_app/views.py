@@ -122,54 +122,62 @@ def get_user_by_user_id(request, user_id):
 
 @api_view(['GET', 'POST'])
 def users_handler(request):
-    """
-    Creates a user with:
-    - Unique user ID
-    - Age and age range calculation
-    - Group assignment based on interests
-    - Subgroup assignment within the group
-    """
+    # Gets all users
+    if request.method == 'GET':
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+    
+    # Create user
+    elif request.method == 'POST':
+        """
+        Creates a user with:
+        - Unique user ID
+        - Age and age range calculation
+        - Group assignment based on interests
+        - Subgroup assignment within the group
+        """
 
-    # Step 1: Calculate age and age range
-    age, age_range = calculate_age_and_range(request.data['dob'])
-    request.data['age'] = age
-    request.data['age_range'] = age_range
+        # Step 1: Calculate age and age range
+        age, age_range = calculate_age_and_range(request.data['dob'])
+        request.data['age'] = age
+        request.data['age_range'] = age_range
 
-    # Step 2: Generate unique user ID
-    request.data['user_id'] = generate_unique_user_id()
-    user_id = request.data['user_id']
+        # Step 2: Generate unique user ID
+        request.data['user_id'] = generate_unique_user_id()
+        user_id = request.data['user_id']
 
-    # Step 3: Get interests and match to database
-    interests = request.data.get('interests', [])  # Expecting a list of interest IDs
-    interests_qs = Interest.objects.filter(id__in=interests)
-    interest_names = list(interests_qs.values_list('name', flat=True))
+        # Step 3: Get interests and match to database
+        interests = request.data.get('interests', [])  # Expecting a list of interest IDs
+        interests_qs = Interest.objects.filter(id__in=interests)
+        interest_names = list(interests_qs.values_list('name', flat=True))
 
-    # Step 4: Assign user to a group (cluster) using the interest-based ML algorithm
-    cluster_assignment = assign_new_user_to_cluster(user_id, interest_names)
+        # Step 4: Assign user to a group (cluster) using the interest-based ML algorithm
+        cluster_assignment = assign_new_user_to_cluster(user_id, interest_names)
 
-    # Step 5: Use the assigned cluster to get or create the group
-    group_id = cluster_assignment.get('cluster')
-    if group_id is not None:
-        group, _ = Group.objects.get_or_create(group_id=group_id, defaults={"name": f"Group {group_id}"})
-        request.data['group_id'] = group.id  # Set foreign key for serializer
-    else:
-        return Response({"error": "No cluster assigned. Cannot proceed."}, status=status.HTTP_400_BAD_REQUEST)
+        # Step 5: Use the assigned cluster to get or create the group
+        group_id = cluster_assignment.get('cluster')
+        if group_id is not None:
+            group, _ = Group.objects.get_or_create(group_id=group_id, defaults={"name": f"Group {group_id}"})
+            request.data['group_id'] = group.id  # Set foreign key for serializer
+        else:
+            return Response({"error": "No cluster assigned. Cannot proceed."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Step 6: Create the user
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        
-        # Attach interest relations after user is created
-        if interests_qs.exists():
-            user.interests.set(interests_qs)
+        # Step 6: Create the user
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            
+            # Attach interest relations after user is created
+            if interests_qs.exists():
+                user.interests.set(interests_qs)
 
-        # Step 7: Assign to appropriate subgroup within the assigned group
-        assign_user_to_subgroup(user, SubGroup, group)
+            # Step 7: Assign to appropriate subgroup within the assigned group
+            assign_user_to_subgroup(user, SubGroup, group)
 
-        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+            return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
