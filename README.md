@@ -46,8 +46,8 @@ Prequisites:
       }
      
      ```
-2. **Seed the Database with our dummy 500 users**
-   - Open a new terminal in the same `mutuals_backend` directory and ensure you're in your virtual environment by running `source venv/bin/activate` to activate it then run the command `python seed_data.py --interests` to seed the database with interests and `python seed_data.py --users` to add the 500 users from our csv file. You can verify this by opening the `db.sqlite3` file on DB Browser, and check `mutuals_app_user` and so on...
+2. **Seed the Database with clustered users from file `clustered_mutuals.csv`**
+   - Open a new terminal in the same `mutuals_backend` directory and ensure you're in your virtual environment by running `source venv/bin/activate` to activate it then run the command `python seed_data.py --interests` to seed the database with interests and `python seed_data.py --groups --file='./data/groups.json'` (`groups.json` should contain groups from initial clustering) and then finally the users `python seed_data.py --users` to add the 1500 users from our csv file. You can verify this by opening the `db.sqlite3` file on DB Browser, and check `mutuals_app_user` and so on...
    - You can also verify by visiting `http://127.0.0.1:8000/api/users` on the browser and seeing all users and their interests. As we can see, groups and subgroups are null at this point.
 
 
