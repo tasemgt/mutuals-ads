@@ -1,23 +1,12 @@
-import joblib
-import os
 import random
 from datetime import datetime, date
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from django.db import transaction
 from .models import User, Interest, Group, SubGroup
 from .serializers import InterestSerializer, UserSerializer, GroupSerializer, SubGroupSerializer
-import numpy as np
-from .ml_models.models import assign_new_user_to_cluster 
+from .ml_models.models import assign_new_user_to_cluster, assign_user_to_subgroup 
 
-
-# Load your trained clustering model (e.g., KMeans)
-# MODEL_PATH = os.path.join(os.path.dirname(__file__), 'ml_models', 'clustering_model.pkl')
-# ml_model = joblib.load(MODEL_PATH)
-
-# # Pre-trained encoder to match training-time format for interests
-# mlb = joblib.load(os.path.join(os.path.dirname(__file__), 'ml_models', 'interest_encoder.pkl'))
 
 
 def calculate_age_and_range(dob_str):
@@ -116,6 +105,7 @@ def get_user_by_user_id(request, user_id):
         # Get subgroup members (excluding current user)
         if user.subgroup:
             members = User.objects.filter(subgroup=user.subgroup).exclude(id=user.id)
+            print("Members>", members)
             for member in members:
                 user_data["subgroupMembers"].append({
                     "id": str(member.id),
@@ -132,71 +122,54 @@ def get_user_by_user_id(request, user_id):
 
 @api_view(['GET', 'POST'])
 def users_handler(request):
-    if request.method == 'GET':
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+    """
+    Creates a user with:
+    - Unique user ID
+    - Age and age range calculation
+    - Group assignment based on interests
+    - Subgroup assignment within the group
+    """
 
-    elif request.method == 'POST':
-        # Calculate age and age range
-        age, age_range = calculate_age_and_range(request.data['dob'])
-        request.data['age'] = age
-        request.data['age_range'] = age_range
+    # Step 1: Calculate age and age range
+    age, age_range = calculate_age_and_range(request.data['dob'])
+    request.data['age'] = age
+    request.data['age_range'] = age_range
 
-        # Generate unique user ID
-        request.data['user_id'] = generate_unique_user_id()
+    # Step 2: Generate unique user ID
+    request.data['user_id'] = generate_unique_user_id()
+    user_id = request.data['user_id']
 
-        # Assign user to a group (cluster) using their interests
-        interests = request.data.get('interests', [])  # This should be a list of strings
-        user_id = request.data['user_id']
+    # Step 3: Get interests and match to database
+    interests = request.data.get('interests', [])  # Expecting a list of interest IDs
+    interests_qs = Interest.objects.filter(id__in=interests)
+    interest_names = list(interests_qs.values_list('name', flat=True))
 
-        # Lookup interest names in the database
-        interests_qs = Interest.objects.filter(id__in=interests)
-        interest_names = list(interests_qs.values_list('name', flat=True)) 
+    # Step 4: Assign user to a group (cluster) using the interest-based ML algorithm
+    cluster_assignment = assign_new_user_to_cluster(user_id, interest_names)
 
-        print(user_id)
+    # Step 5: Use the assigned cluster to get or create the group
+    group_id = cluster_assignment.get('cluster')
+    if group_id is not None:
+        group, _ = Group.objects.get_or_create(group_id=group_id, defaults={"name": f"Group {group_id}"})
+        request.data['group_id'] = group.id  # Set foreign key for serializer
+    else:
+        return Response({"error": "No cluster assigned. Cannot proceed."}, status=status.HTTP_400_BAD_REQUEST)
 
-        cluster_assignment = assign_new_user_to_cluster(user_id, interest_names)
-
-        print("Cluster>>", cluster_assignment)
-
-        # Add the cluster as group_id to the user data
-        if cluster_assignment['cluster'] is not None:
-            request.data['group_id'] = cluster_assignment['cluster']
-        else:
-            request.data['group_id'] = None  # Or set a default group if needed
-
-        # Proceed with serializer
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-# def users_handler(request):
-#     if request.method == 'GET':
-#         users = User.objects.all()
-#         serializer = UserSerializer(users, many=True)
-#         return Response(serializer.data)
-
-#     # Create user
-#     elif request.method == 'POST':
+    # Step 6: Create the user
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
         
-#         age, age_range = calculate_age_and_range(request.data['dob'])
-#         request.data['age'] = age
-#         request.data['age_range'] = age_range
-#         request.data['user_id'] = generate_unique_user_id()
+        # Attach interest relations after user is created
+        if interests_qs.exists():
+            user.interests.set(interests_qs)
 
-#         print(request.data)
+        # Step 7: Assign to appropriate subgroup within the assigned group
+        assign_user_to_subgroup(user, SubGroup, group)
 
-#         serializer = UserSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])

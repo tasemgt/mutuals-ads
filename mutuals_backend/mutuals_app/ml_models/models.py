@@ -1,9 +1,12 @@
 # myapp/utils/cluster_model.py
-
 import pickle
 import os
+import random
 from collections import Counter
 import networkx as nx
+from django.db.models import Count, Max
+from django.utils.crypto import get_random_string
+from django.utils.timezone import now
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, ".")
@@ -73,6 +76,63 @@ def assign_new_user_to_cluster(new_user_id, new_user_interests):
         tag = "Unassigned"
 
     return {"cluster": assigned_cluster, "tag": tag}
+
+def generate_subgroup_name(base_name, group_id, subgroup_id):
+    adjectives = ["Creative", "Dynamic", "Brave", "Inspired", "Innovative"]
+    return f"{random.choice(adjectives)} Squad {group_id}-{subgroup_id}"
+
+# def assign_user_to_subgroup(user, group, SubGroupModel):
+def assign_user_to_subgroup(user, SubGroupModel, group):    
+    """
+    Assigns a user to a suitable subgroup under the user's group.
+    If no suitable subgroup exists, creates a new one.
+    """
+    # group = user.group
+    existing_subgroups = SubGroupModel.objects.filter(group=group).prefetch_related("users")
+
+    print("Existing GROUP >> ", group)
+    print("Existing subs >> ", existing_subgroups)
+
+    for subgroup in existing_subgroups:
+        members = subgroup.users.all()
+
+        print("Existing members >> ", members)
+
+
+        # Skip if full
+        if members.count() >= 5:
+            continue
+
+        # Heuristics: match by age_range, then budget and city
+        if all([
+            abs(user.age - m.age) <= 5 for m in members
+        ]) and all([
+            abs(user.budget - m.budget) <= 500 for m in members  # tweak as needed
+        ]):
+        # and all([
+        #     user.city.lower() == m.city.lower() for m in members
+        # ]):
+            user.subgroup = subgroup
+            user.save()
+            return subgroup  # Assigned to existing subgroup
+
+    # If no fit found, create new subgroup
+    next_subgroup_id = (
+        SubGroupModel.objects.filter(group=group).aggregate(max_id=Max("subgroup_id"))["max_id"] or 0
+    ) + 1
+
+    name = generate_subgroup_name("Squad", group.group_id, next_subgroup_id)
+
+    new_subgroup = SubGroupModel.objects.create(
+        subgroup_id=next_subgroup_id,
+        group=group,
+        name=name
+    )
+
+    user.subgroup = new_subgroup
+    user.save()
+
+    return new_subgroup
 
 # resp = assign_new_user_to_cluster('M0175', ['Cooking','Movies', 'Cars and automobiles'])
 # print(resp)

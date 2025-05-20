@@ -14,11 +14,15 @@ class Group(models.Model):
         return self.name
 
 class SubGroup(models.Model):
-    subgroup_id = models.IntegerField(unique=True)
+    subgroup_id = models.IntegerField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='subgroups')
     name = models.CharField(max_length=100)
     event = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("group", "subgroup_id")
+
     def __str__(self):
         return f"{self.name} (Group: {self.group.name})"
 

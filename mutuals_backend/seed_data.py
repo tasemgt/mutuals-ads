@@ -3,12 +3,15 @@ import argparse
 import json
 import django
 import pandas as pd
+from itertools import islice
 
 # Setup Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mutuals_backend.settings')  # Replace with your project name
 django.setup()
 
-from mutuals_app.models import Interest, User, Group
+from mutuals_app.models import Interest, User, Group, SubGroup
+from mutuals_app.ml_models.models import assign_user_to_subgroup
+
 
 
 # csv_file = './data/sm500_data.csv'
@@ -62,26 +65,23 @@ def load_groups(file_path):
 def load_users(file_path):
     df = pd.read_csv(file_path)
 
-    for _, row in df.iterrows():
-        # Create or get user
+    for _, row in df.iterrows():  #islice(df.iterrows(), 28, 35, 1):
         user, created = User.objects.get_or_create(
-            user_id=row['user_id'],
+            user_id=row["user_id"],
             defaults={
-                'name': row['name'],
-                'gender': row['gender'],
-                'dob': pd.to_datetime(row['dob']).date(),
-                'city': row['city'],
-                'occupation': row['occupation'],
-                'budget': int(row['budget']),
-                'age': int(row['age']),
-                'age_range': row['age_range'],
+                "name": row["name"],
+                "dob": pd.to_datetime(row["dob"]).date(),
+                "gender": row["gender"],
+                "city": row["city"],
+                "occupation": row["occupation"],
+                "budget": float(row["budget"]),
+                "age": int(row["age"]),
+                "age_range": row["age_range"],
             }
         )
 
-        # Always clear previous interests (if updating)
+        # Assign interests
         user.interests.clear()
-
-        # Clean and associate interests
         if pd.notna(row['interests']):
             interest_names = clean_interest_string(row['interests'])
             for name in set(interest_names):
@@ -89,26 +89,24 @@ def load_users(file_path):
                     interest = Interest.objects.get(name=name)
                     user.interests.add(interest)
                 except Interest.DoesNotExist:
-                    print(f"[!] Interest '{name}' not found in DB — skipping.")
+                    continue
 
-        # Assign user to a Group using the 'Cluster' column
-        if 'Cluster' in row and pd.notna(row['Cluster']):
-            try:
-                group_id = int(row['Cluster'])
+        # Assign group from "Cluster" column
+        if pd.notna(row["Cluster"]):
+            group_id = int(row["Cluster"])
+            group, _ = Group.objects.get_or_create(group_id=group_id, defaults={"name": f"Group {group_id}"})
+            user.group = group
+            user.save()
 
-                # Create or get the group with explicit group_id
-                group, _ = Group.objects.get_or_create(
-                    group_id=group_id,
-                    defaults={'name': f"Group {group_id}"}
-                )
+            # Assign to subgroup
+            assign_user_to_subgroup(user, SubGroup, group)
 
-                user.group_id = group  # Assuming ForeignKey is named 'group_id'
-                user.save()
-            except Exception as e:
-                print(f"[!] Failed to assign group {row['Cluster']} to user {user.user_id}: {e}")
+        print(f"{'Created' if created else 'Updated'} user: {user.name}")
 
-        print(f"{'Created' if created else 'Updated'} user: {user.name} with {user.interests.count()} interests.")
 
+def clear_data():
+    User.objects.all().delete()
+    SubGroup.objects.all().delete()
 
 
 def main():
@@ -117,6 +115,7 @@ def main():
     parser.add_argument('--interests', action='store_true', help='Load interest data')
     parser.add_argument('--groups', action='store_true', help='Load groups data')
     parser.add_argument('--file', type=str, default='./data/clustered_mutuals.csv', help='Path to CSV file')
+    parser.add_argument('--clear', action='store_true', help='Clears data')
 
     args = parser.parse_args()
 
@@ -128,6 +127,9 @@ def main():
 
     if args.users:
         load_users(args.file)
+    
+    if args.clear:
+        clear_data()
 
     if not args.users and not args.interests:
         parser.print_help()
