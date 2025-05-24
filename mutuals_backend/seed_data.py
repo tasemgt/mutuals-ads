@@ -9,7 +9,7 @@ from itertools import islice
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mutuals_backend.settings')  # Replace with your project name
 django.setup()
 
-from mutuals_app.models import Interest, User, Group, SubGroup
+from mutuals_app.models import Interest, User, Group, SubGroup, Event
 from mutuals_app.ml_models.models import assign_user_to_subgroup
 
 
@@ -104,6 +104,26 @@ def load_users(file_path):
         print(f"{'Created' if created else 'Updated'} user: {user.name}")
 
 
+def load_events(file_path):
+    df = pd.read_csv(file_path)
+
+    for _, row in df.iterrows():
+        try:
+            Event.objects.get_or_create(
+                event_id=row['event_id'],
+                defaults={
+                    'event_name': row['event_name'],
+                    'event_date': pd.to_datetime(row['event_date']).date(),
+                    'location': row['location'],
+                    'ticket_price': float(row['ticket_price']),
+                    'venue_id': int(row['venue_id']),
+                    'tags': eval(row['tags']) if isinstance(row['tags'], str) else row['tags'],
+                }
+            )
+        except Exception as e:
+            print(f"Failed to insert row: {row['event_id']} - Error: {e}")
+
+
 def clear_data():
     User.objects.all().delete()
     SubGroup.objects.all().delete()
@@ -113,6 +133,7 @@ def main():
     parser = argparse.ArgumentParser(description="Load data into the database.")
     parser.add_argument('--users', action='store_true', help='Load user data')
     parser.add_argument('--interests', action='store_true', help='Load interest data')
+    parser.add_argument('--events', action='store_true', help='Load events data')
     parser.add_argument('--groups', action='store_true', help='Load groups data')
     parser.add_argument('--file', type=str, default='./data/clustered_mutuals.csv', help='Path to CSV file')
     parser.add_argument('--clear', action='store_true', help='Clears data')
@@ -121,6 +142,9 @@ def main():
 
     if args.interests:
         load_interests(args.file)
+    
+    if args.events:
+        load_events(args.file)
     
     if args.groups:
         load_groups(args.file)
@@ -139,6 +163,7 @@ if __name__ == "__main__":
 
 
 #  python seed_data.py --groups --file='./data/groups.json'
+#  python seed_data.py --events --file='./data/mock_events.csv'
 
 # python manage.py shell
 # from mutuals_app.models import User

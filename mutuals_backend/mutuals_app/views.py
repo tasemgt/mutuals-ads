@@ -1,10 +1,11 @@
 import random
+import re
 from datetime import datetime, date
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import User, Interest, Group, SubGroup
-from .serializers import InterestSerializer, UserSerializer, GroupSerializer, SubGroupSerializer
+from .models import User, Interest, Group, SubGroup, Event
+from .serializers import EventSerializer, InterestSerializer, UserSerializer, GroupSerializer, SubGroupSerializer
 from .ml_models.models import assign_new_user_to_cluster, assign_user_to_subgroup 
 
 
@@ -258,3 +259,42 @@ def subgroups_handler(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET', 'POST'])
+def events_handler(request):
+    if request.method == 'GET':
+        events = Event.objects.all()
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = EventSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def events_by_user_group_tags(request, user_id):
+    try:
+        user = User.objects.get(user_id=user_id)
+        group = user.group
+
+        if not group:
+            return Response({"error": "User does not belong to any group."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Extract words from group name (split by non-word chars)
+        words = re.findall(r'\b\w+\b', group.name.lower())
+
+        # Fetch events and match tags loosely
+        matched_events = []
+        for event in Event.objects.all():
+            event_tags = [tag.lower() for tag in event.tags]
+            if any(word in event_tags for word in words):
+                matched_events.append(event)
+
+        serializer = EventSerializer(matched_events[:3], many=True)
+        return Response(serializer.data)
+
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)

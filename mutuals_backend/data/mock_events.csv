@@ -1,0 +1,101 @@
+,event_id,event_name,event_date,location,ticket_price,venue_id,tags
+0,1,Auto Innovate Showcase,2025-06-03,Bolton,106.96,3,"['business', 'cars', 'family']"
+1,2,Maker Journey Experience,2025-06-03,Manchester,131.52,32,"['travel', 'diy', 'nature', 'travel', 'cars']"
+2,3,Bond Mind Showcase,2025-05-29,Preston,41.78,8,"['learning', 'nature', 'family']"
+3,4,Innovate Auto Festival,2025-06-20,Bolton,106.27,26,"['travel', 'business', 'entrepreneurship', 'cars']"
+4,5,Crafted Forge Conclave,2025-06-01,Manchester,47.55,25,"['beauty', 'entrepreneurship', 'fitness', 'crafts']"
+5,6,Road Vogue Experience,2025-06-15,Bolton,173.86,27,"['travel', 'fashion', 'gaming', 'automobiles', 'cars']"
+6,7,Quest Couture Festival,2025-06-10,Liverpool,140.64,28,"['fashion', 'gaming']"
+7,8,Explorer Artisan Gala,2025-06-07,Bolton,142.48,19,"['travel', 'diy']"
+8,9,Mind FitFest Festival,2025-05-27,Preston,183.2,8,"['fitness', 'music', 'crafts', 'learning', 'education']"
+9,10,Gear Legacy Conclave,2025-06-21,Bolton,73.56,26,"['automobiles', 'family']"
+10,11,Pulse Harmony Festival,2025-06-03,Bolton,47.67,12,"['fitness', 'music']"
+11,12,Harmony Pulse Experience,2025-06-16,Preston,19.99,24,"['music', 'fitness']"
+12,13,Glamour Summit Festival,2025-06-22,Stockport,42.44,34,"['beauty', 'business']"
+13,14,Visionary Insight Festival,2025-06-08,Bolton,188.64,30,"['entrepreneurship', 'beauty', 'education']"
+14,15,Journey Eco Expo,2025-06-21,Manchester,107.24,32,"['nature', 'travel']"
+15,16,Nurture Clan Experience,2025-06-15,Preston,181.43,33,"['travel', 'family', 'parenting']"
+16,17,Pulse Craft Summit,2025-06-23,Preston,110.65,7,"['fitness', 'travel', 'diy']"
+17,18,FitFest Mind Showcase,2025-06-04,Preston,22.45,17,"['fitness', 'learning']"
+18,19,Concert Wanderlust Showcase,2025-06-20,Manchester,121.53,6,"['cars', 'travel', 'fitness', 'music']"
+19,20,Bloom Wanderlust Showcase,2025-06-03,Manchester,131.67,32,"['fitness', 'nature', 'travel', 'diy', 'travel']"
+20,21,Forge Summit,2025-06-12,Liverpool,13.9,29,['entrepreneurship']
+21,22,Gallery Discovery Showcase,2025-06-10,Stockport,37.89,14,"['art', 'learning', 'gaming']"
+22,23,Elegance Explorer Expo,2025-06-12,Manchester,195.1,25,"['beauty', 'business', 'travel', 'learning']"
+23,24,Virtual Showcase,2025-05-28,Stockport,32.51,1,['gaming']
+24,25,Venture Festival,2025-05-27,Manchester,28.5,15,['business']
+25,26,Couture Quest Summit,2025-06-23,Bolton,108.68,26,"['art', 'nature', 'gaming', 'fashion']"
+26,27,Vogue Epic Conclave,2025-06-04,Bolton,55.92,4,"['gaming', 'fashion']"
+27,28,Speed Nurture Retreat,2025-06-07,Bolton,165.33,3,"['cars', 'parenting']"
+28,29,Rhythm Create Showcase,2025-06-19,Preston,47.36,24,"['diy', 'fitness', 'music']"
+29,30,Gallery Couture Festival,2025-05-26,Preston,65.81,7,"['art', 'fashion']"
+30,31,Bloom Experience,2025-06-10,Preston,25.97,13,['nature']
+31,32,Explorer Serenity Expo,2025-06-16,Preston,150.77,17,"['nature', 'travel', 'cars']"
+32,33,Harmony Chic Summit,2025-06-09,Liverpool,27.81,18,"['fitness', 'music', 'beauty', 'learning']"
+33,34,Explorer Showcase,2025-06-23,Liverpool,119.94,28,['travel']
+34,35,Wild Experience,2025-05-25,Manchester,11.99,32,['nature']
+35,36,Glamour Gallery Summit,2025-06-21,Liverpool,98.13,29,"['beauty', 'entrepreneurship', 'education', 'art', 'parenting']"
+36,37,Insight Gala,2025-06-07,Manchester,175.59,25,['education']
+37,38,Pulse Elegance Retreat,2025-06-04,Bolton,17.42,21,"['fitness', 'beauty', 'business']"
+38,39,Learn Maker Festival,2025-06-17,Liverpool,186.61,28,"['diy', 'cars', 'learning', 'education']"
+39,40,Masterpiece Create Summit,2025-05-29,Bolton,39.07,3,"['diy', 'art']"
+40,41,Odyssey Maker Retreat,2025-06-10,Bolton,189.5,9,"['diy', 'travel', 'fitness', 'music', 'travel']"
+41,42,Serenity Epic Summit,2025-06-17,Preston,30.51,16,"['gaming', 'nature']"
+42,43,Together Showcase,2025-06-10,Preston,30.83,8,['parenting']
+43,44,Discovery Expo,2025-06-06,Preston,32.07,24,['learning']
+44,45,Summit Expo,2025-06-22,Preston,48.28,35,['business']
+45,46,Odyssey Kin Festival,2025-06-16,Manchester,50.15,25,"['travel', 'family', 'parenting', 'diy']"
+46,47,Create Gathering Festival,2025-06-04,Bolton,16.41,30,"['nature', 'family', 'diy', 'crafts']"
+47,48,Concert Couture Expo,2025-06-03,Manchester,96.78,5,"['fashion', 'music']"
+48,49,Melody Scholar Showcase,2025-06-14,Manchester,20.72,5,"['music', 'learning']"
+49,50,Wild Artistry Summit,2025-06-15,Bolton,37.63,26,"['crafts', 'nature']"
+50,51,Creative Expo,2025-06-18,Bolton,32.19,4,['art']
+51,52,Academy Discovery Retreat,2025-06-08,Manchester,84.8,5,"['education', 'learning']"
+52,53,Motor Odyssey Experience,2025-06-09,Bolton,57.67,9,"['beauty', 'travel', 'family', 'cars']"
+53,54,Creative Glamour Summit,2025-06-14,Preston,174.31,31,"['art', 'beauty', 'cars']"
+54,55,Epic Explorer Showcase,2025-06-11,Bolton,128.55,19,"['travel', 'gaming']"
+55,56,Cruise Elegance Gala,2025-06-19,Preston,122.24,7,"['automobiles', 'beauty']"
+56,57,Wanderlust Gallery Expo,2025-06-20,Liverpool,82.63,2,"['crafts', 'travel', 'art']"
+57,58,Vitality Insight Showcase,2025-05-26,Bolton,176.66,21,"['fitness', 'learning', 'education']"
+58,59,Energy Visionary Experience,2025-05-29,Bolton,45.55,12,"['entrepreneurship', 'fitness']"
+59,60,Mind Gala,2025-06-01,Bolton,12.05,19,['learning']
+60,61,Arena Gallery Showcase,2025-06-06,Stockport,20.85,14,"['learning', 'art', 'gaming']"
+61,62,Couture Eco Gala,2025-06-08,Bolton,89.72,4,"['education', 'fashion', 'nature']"
+62,63,Pulse Retreat,2025-06-11,Stockport,15.09,34,['fitness']
+63,64,Masterpiece Academy Showcase,2025-06-02,Manchester,99.96,5,"['education', 'art']"
+64,65,Quest Pioneer Expo,2025-06-18,Manchester,21.34,6,"['gaming', 'entrepreneurship']"
+65,66,Eco Visionary Conclave,2025-06-10,Manchester,112.98,6,"['nature', 'entrepreneurship', 'cars', 'parenting']"
+66,67,Couture Odyssey Experience,2025-05-28,Liverpool,146.71,29,"['travel', 'cars', 'gaming', 'fashion']"
+67,68,Enterprise Handmade Gala,2025-05-31,Liverpool,32.72,28,"['crafts', 'diy', 'business', 'entrepreneurship']"
+68,69,Glamour Showcase,2025-05-31,Liverpool,37.53,29,['beauty']
+69,70,Pulse Concert Festival,2025-06-13,Bolton,21.9,19,"['diy', 'fitness', 'music']"
+70,71,Enterprise Radiance Experience,2025-06-23,Liverpool,91.73,29,"['cars', 'parenting', 'beauty', 'business']"
+71,72,Serenity Retreat,2025-05-28,Stockport,48.91,14,['nature']
+72,73,Arena Retreat,2025-06-07,Bolton,31.97,9,['gaming']
+73,74,Wild Odyssey Summit,2025-06-06,Preston,140.56,10,"['nature', 'travel']"
+74,75,Cruise Gala,2025-06-11,Stockport,136.99,1,['automobiles']
+75,76,Legacy Couture Expo,2025-05-25,Stockport,113.03,14,"['entrepreneurship', 'business', 'gaming', 'fashion', 'automobiles', 'family']"
+76,77,Crafted Forge Festival,2025-06-12,Preston,43.97,17,"['art', 'entrepreneurship', 'diy', 'crafts']"
+77,78,Vitality Harmony Conclave,2025-06-03,Bolton,186.88,4,"['automobiles', 'parenting', 'crafts', 'diy', 'fitness', 'music']"
+78,79,Bond FitFest Experience,2025-06-14,Bolton,140.33,27,"['fashion', 'family', 'fitness']"
+79,80,Gear Learn Expo,2025-06-08,Liverpool,138.19,28,"['automobiles', 'nature', 'travel', 'learning', 'education']"
+80,81,Enterprise Pulse Expo,2025-06-22,Stockport,32.78,1,"['fitness', 'business', 'family', 'parenting']"
+81,82,Insight Vogue Experience,2025-06-12,Manchester,165.43,22,"['fashion', 'education', 'crafts']"
+82,83,Auto Explorer Expo,2025-05-30,Manchester,146.81,32,"['fashion', 'cars', 'travel']"
+83,84,Journey Festival,2025-05-31,Bolton,155.92,3,['travel']
+84,85,Maker Journey Festival,2025-06-05,Preston,57.25,33,"['travel', 'diy']"
+85,86,Virtual Couture Festival,2025-06-21,Liverpool,186.2,28,"['fashion', 'gaming', 'crafts', 'diy']"
+86,87,Knowledge Explorer Retreat,2025-06-10,Preston,85.99,16,"['education', 'travel']"
+87,88,Drive Maker Gala,2025-06-04,Preston,76.51,7,"['cars', 'automobiles', 'diy', 'travel']"
+88,89,Insight Forge Gala,2025-06-22,Bolton,188.32,26,"['art', 'education', 'entrepreneurship']"
+89,90,Melody Artistry Gala,2025-05-26,Stockport,81.35,14,"['entrepreneurship', 'travel', 'crafts', 'music']"
+90,91,Maker Vitality Experience,2025-06-04,Preston,39.84,7,"['diy', 'fitness']"
+91,92,Cruise Create Showcase,2025-06-18,Liverpool,147.59,18,"['diy', 'automobiles', 'cars', 'education']"
+92,93,Speed Together Retreat,2025-05-26,Preston,163.42,8,"['parenting', 'cars']"
+93,94,Discovery Vogue Conclave,2025-06-02,Liverpool,198.59,29,"['fashion', 'learning', 'education', 'beauty']"
+94,95,Auto Runway Expo,2025-05-26,Manchester,123.12,25,"['diy', 'fashion', 'cars']"
+95,96,Odyssey Quest Gala,2025-06-07,Manchester,105.41,23,"['fashion', 'gaming', 'travel', 'learning']"
+96,97,Elegance Harmony Showcase,2025-06-10,Manchester,11.54,25,"['beauty', 'music']"
+97,98,Journey Pulse Experience,2025-06-20,Bolton,101.69,4,"['travel', 'fitness', 'music', 'art', 'learning']"
+98,99,Radiance Retreat,2025-06-18,Preston,25.65,8,['beauty']
+99,100,Wanderlust Mind Gala,2025-06-04,Stockport,62.74,14,"['learning', 'nature', 'travel']"

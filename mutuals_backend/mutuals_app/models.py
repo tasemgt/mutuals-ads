@@ -1,4 +1,5 @@
 from django.db import models
+import jsonfield
 # from django.contrib.auth.models import AbstractUser  # Optional, for auth
 
 class Interest(models.Model):
@@ -42,3 +43,15 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
+
+class Event(models.Model):
+    event_id = models.IntegerField(unique=True)
+    event_name = models.CharField(max_length=255)
+    event_date = models.DateField()
+    location = models.CharField(max_length=100)
+    ticket_price = models.FloatField()
+    venue_id = models.IntegerField()
+    tags = jsonfield.JSONField()  # Stores tags as a list
+
+    def __str__(self):
+        return self.event_name

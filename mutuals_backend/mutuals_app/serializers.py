@@ -1,5 +1,6 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField, SlugRelatedField
-from .models import User, Interest, Group, SubGroup
+from .models import User, Interest, Group, SubGroup, Event
 
 class InterestSerializer(ModelSerializer):
     class Meta:
@@ -73,4 +74,25 @@ class UserSerializer(ModelSerializer):
             instance.interests.set(interests)
         return instance
 
+class EventSerializer(ModelSerializer):
+    id = serializers.SerializerMethodField()
+    name = serializers.CharField(source='event_name')
+    location = serializers.CharField()
+    ticketPrice = serializers.FloatField(source='ticket_price')
+    date = serializers.DateField(source='event_date')
+    tags = serializers.ListField()
+    description = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Event
+        fields = ['id', 'name', 'location', 'ticketPrice', 'date', 'tags', 'description']
+
+    def get_id(self, obj):
+        return f"event_{obj.event_id}"
+
+    def get_description(self, obj):
+        return (
+            "Join us for the biggest tech conference of the year featuring keynotes from "
+            "industry leaders, hands-on workshops, and networking opportunities with fellow tech enthusiasts."
+        )
         
