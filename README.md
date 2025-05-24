@@ -3,7 +3,7 @@ Steps to set up mutuals prototype 🛠️
 
 Problem Description 
 ================
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+This project is a Django/React based recommendation system that connects users with relevant events based on their interests and group affiliations. Users are assigned to groups and subgroups using a clustering algorithm informed by shared interests, age, budget, and location. Each group has a name that reflects user interests, which are parsed and used to match users with upcoming events. Events are stored in a structured database and can be filtered dynamically to return personalized suggestions, ensuring users see only the most relevant and engaging opportunities.
 
 
 Initial Setup
