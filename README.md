@@ -1,7 +1,7 @@
 Steps to set up mutuals prototype 🛠️
 ========
 
-Problem Description 
+About Project
 ================
 This project is a Django/React based recommendation system that connects users with relevant events based on their interests and group affiliations. Users are assigned to groups and subgroups using a clustering algorithm informed by shared interests, age, budget, and location. Each group has a name that reflects user interests, which are parsed and used to match users with upcoming events. Events are stored in a structured database and can be filtered dynamically to return personalized suggestions, ensuring users see only the most relevant and engaging opportunities.
 
