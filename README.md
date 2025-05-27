@@ -68,9 +68,9 @@ Prequisites:
    <img width="1113" alt="Screenshot 2025-05-06 at 15 31 56" src="https://github.com/user-attachments/assets/8b4b6196-dd70-4e73-8f09-c8077d554819" />   
 
 2. **Testing out the platform**
-   - You can check for a users `user_id` in the database or the python-django api at `` and copy a user id.
+   - You can check for a user's `user_id` in the database or the python-django api at `http://127.0.0.1:8000/api/users/` and copy a user id.
    - Click the 'Enter Dashboard' button Paste or type such id into the 'Enter your User ID' field and proceed.
-   - This will navigate you to the dashboard of that user showing his interests, group, subgroup, and fellow mutuals if any.
+   - This will navigate you to the dashboard of that user showing his interests, group, subgroup, recommended events and fellow mutuals if any.
 
   <br>
 
